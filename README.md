@@ -12,7 +12,7 @@ pip install mcp-llms-txt
 
 ### Command-line Interface
 
-The `llms-txt` command provides a simple CLI for launching the documentation server. You can specify documentation sources in three ways:
+The `llms-txt` command provides a simple CLI for launching the documentation server. You can specify documentation sources in three ways, and these can be combined:
 
 1. Using a YAML config file:
 
@@ -26,10 +26,18 @@ llms-txt --yaml sample_config.yaml
 llms-txt --json sample_config.json
 ```
 
-3. Directly specifying llms.txt URLs:
+3. Directly specifying llms.txt URLs with optional names:
 
 ```bash
-llms-txt --urls https://lifterlms.com/llms.txt https://woocommerce.com/llms.txt
+llms-txt --urls https://lifterlms.com/llms.txt LifterLMS:https://lifterlms.com/llms.txt WooCommerce:https://woocommerce.com/llms.txt
+```
+
+URLs can be specified either as plain URLs or with optional names using the format `name:url`.
+
+You can also combine these methods to merge documentation sources:
+
+```bash
+llms-txt --yaml sample_config.yaml --json additional_sources.json --urls https://example.com/llms.txt
 ```
 
 ### Additional Options

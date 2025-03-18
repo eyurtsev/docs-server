@@ -18,15 +18,16 @@ def parse_args() -> argparse.Namespace:
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
-    group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument(
+    # Allow combining multiple doc source methods
+    parser.add_argument(
         "--yaml", "-y", type=str, help="Path to YAML config file with doc sources"
     )
-    group.add_argument(
+    parser.add_argument(
         "--json", "-j", type=str, help="Path to JSON config file with doc sources"
     )
-    group.add_argument(
-        "--urls", "-u", type=str, nargs="+", help="List of llms.txt URLs"
+    parser.add_argument(
+        "--urls", "-u", type=str, nargs="+", 
+        help="List of llms.txt URLs with optional names (format: 'url' or 'name:url')"
     )
 
     parser.add_argument(
@@ -77,15 +78,24 @@ def load_config_file(file_path: str, file_format: str) -> List[Dict[str, str]]:
 
 
 def create_doc_sources_from_urls(urls: List[str]) -> List[DocSource]:
-    """Create doc sources from a list of URLs.
+    """Create doc sources from a list of URLs with optional names.
 
     Args:
-        urls: List of llms.txt URLs
+        urls: List of llms.txt URLs with optional names (format: 'url' or 'name:url')
 
     Returns:
         List of DocSource objects
     """
-    return [{"llms_txt": url} for url in urls]
+    doc_sources = []
+    for entry in urls:
+        if ":" in entry and not entry.startswith(("http:", "https:")):
+            # Format is name:url
+            name, url = entry.split(":", 1)
+            doc_sources.append({"name": name, "llms_txt": url})
+        else:
+            # Format is just url
+            doc_sources.append({"llms_txt": entry})
+    return doc_sources
 
 
 def main() -> None:
@@ -95,12 +105,18 @@ def main() -> None:
     # Load doc sources based on command-line arguments
     doc_sources: List[DocSource] = []
 
+    # Check if any source options were provided
+    if not (args.yaml or args.json or args.urls):
+        print("Error: At least one source option (--yaml, --json, or --urls) is required", file=sys.stderr)
+        sys.exit(1)
+
+    # Merge doc sources from all provided methods
     if args.yaml:
-        doc_sources = load_config_file(args.yaml, "yaml")
-    elif args.json:
-        doc_sources = load_config_file(args.json, "json")
-    elif args.urls:
-        doc_sources = create_doc_sources_from_urls(args.urls)
+        doc_sources.extend(load_config_file(args.yaml, "yaml"))
+    if args.json:
+        doc_sources.extend(load_config_file(args.json, "json"))
+    if args.urls:
+        doc_sources.extend(create_doc_sources_from_urls(args.urls))
 
     # Create and run the server
     server = create_server(
