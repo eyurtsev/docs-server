@@ -20,16 +20,20 @@ The `llms-txt` command provides a simple CLI for launching the documentation ser
 llms-txt --yaml sample_config.yaml
 ```
 
+This will load the LangGraph Python documentation from the sample_config.yaml file.
+
 2. Using a JSON config file:
 
 ```bash
 llms-txt --json sample_config.json
 ```
 
+This will load the LangGraph Python documentation from the sample_config.json file.
+
 3. Directly specifying llms.txt URLs with optional names:
 
 ```bash
-llms-txt --urls https://lifterlms.com/llms.txt LifterLMS:https://lifterlms.com/llms.txt WooCommerce:https://woocommerce.com/llms.txt
+llms-txt --urls https://langchain-ai.github.io/langgraph/llms.txt LangGraph:https://langchain-ai.github.io/langgraph/llms.txt
 ```
 
 URLs can be specified either as plain URLs or with optional names using the format `name:url`.
@@ -37,7 +41,7 @@ URLs can be specified either as plain URLs or with optional names using the form
 You can also combine these methods to merge documentation sources:
 
 ```bash
-llms-txt --yaml sample_config.yaml --json additional_sources.json --urls https://example.com/llms.txt
+llms-txt --yaml sample_config.yaml --json sample_config.json --urls https://langchain-ai.github.io/langgraph/llms.txt
 ```
 
 ### Additional Options
@@ -51,16 +55,30 @@ Example with additional options:
 llms-txt --yaml sample_config.yaml --follow-redirects --timeout 15
 ```
 
+This will load the LangGraph Python documentation with a 15-second timeout and follow any HTTP redirects if necessary.
+
 ### Configuration Format
 
 Both YAML and JSON configuration files should contain a list of documentation sources. Each source must include an `llms_txt` URL and can optionally include a `name`:
 
-```yaml
-- name: LifterLMS
-  llms_txt: https://lifterlms.com/llms.txt
+#### YAML Configuration Example (sample_config.yaml)
 
-- name: WooCommerce
-  llms_txt: https://woocommerce.com/llms.txt
+```yaml
+# Sample configuration for mcp-llms-txt server
+# Each entry must have a llms_txt URL and optionally a name
+- name: LangGraph Python
+  llms_txt: https://langchain-ai.github.io/langgraph/llms.txt
+```
+
+#### JSON Configuration Example (sample_config.json)
+
+```json
+[
+  {
+    "name": "LangGraph Python",
+    "llms_txt": "https://langchain-ai.github.io/langgraph/llms.txt"
+  }
+]
 ```
 
 ### Programmatic Usage
@@ -68,17 +86,18 @@ Both YAML and JSON configuration files should contain a list of documentation so
 ```python
 from mcp_llms_txt.main import create_server
 
-# Create a server with multiple documentation sources
+# Create a server with documentation sources
 server = create_server(
     [
         {
-            "name": "LifterLMS",
-            "llms_txt": "https://lifterlms.com/llms.txt",
+            "name": "LangGraph Python",
+            "llms_txt": "https://langchain-ai.github.io/langgraph/llms.txt",
         },
-        {
-            "name": "WooCommerce",
-            "llms_txt": "https://woocommerce.com/llms.txt",
-        },
+        # You can add multiple documentation sources
+        # {
+        #     "name": "Another Documentation",
+        #     "llms_txt": "https://example.com/llms.txt",
+        # },
     ],
     follow_redirects=True,
     timeout=15.0,

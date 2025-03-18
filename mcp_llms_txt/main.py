@@ -44,9 +44,9 @@ def create_server(
     server = FastMCP(name="llms-txt")
     httpx_client = httpx.AsyncClient(follow_redirects=follow_redirects, timeout=timeout)
 
-    @server.tool
+    @server.tool()
     def list_doc_sources() -> str:
-        """List all available doc sources. Always start from this tool before fetching any particular content."""
+        """List all available doc sources. Always use this first."""
         content = ""
         for entry in doc_source:
             name = entry.get("name", "") or extract_domain(entry["llms_txt"])
@@ -57,9 +57,12 @@ def create_server(
     # Parse the domain names in the llms.txt URLs
     allowed_domains = [extract_domain(entry["llms_txt"]) for entry in doc_source]
 
-    @server.tool
+    @server.tool()
     async def fetch_docs(url: str) -> str:
-        """Use this to fetch documentation from a given URL."""
+        """Use this to fetch documentation from a given URL.
+
+        Always use list doc sources before fetching documents.
+        """
         nonlocal allowed_domains
         if not any(url.startswith(domain) for domain in allowed_domains):
             return (

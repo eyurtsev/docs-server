@@ -18,3 +18,8 @@ llms-txt = "mcp_llms_txt.cli:main"
 test = [
     "ruff>=0.11.0",
 ]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+

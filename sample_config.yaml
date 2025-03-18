@@ -1,10 +1,4 @@
 # Sample configuration for mcp-llms-txt server
 # Each entry must have a llms_txt URL and optionally a name
-- name: LifterLMS
-  llms_txt: https://lifterlms.com/llms.txt
-
-- name: WooCommerce
-  llms_txt: https://woocommerce.com/llms.txt
-
-- name: WordPress
-  llms_txt: https://wordpress.org/llms.txt
+- name: LangGraph Python
+  llms_txt: https://langchain-ai.github.io/langgraph/llms.txt
