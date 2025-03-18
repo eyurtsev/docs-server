@@ -52,3 +52,26 @@ def create_server(
             return "Encountered an HTTP error with code " + str(e.response.status_code)
 
     return server
+
+
+#
+# async def run_sse(server: FastMCP, transport: ) -> None:
+#     """Run the server."""
+#     server.run()
+#     await server.run()
+#
+#
+# if __name__ == "__main__":
+#     server = create_server(
+#         [
+#             {
+#                 "name": "LifterLMS",
+#                 "llms_txt": "https://lifterlms.com/llms.txt",
+#             },
+#             {
+#                 "name": "WooCommerce",
+#                 "llms_txt": "https://woocommerce.com/llms.txt",
+#             },
+#         ]
+#     )
+#     server.run()
