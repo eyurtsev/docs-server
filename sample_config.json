@@ -1,0 +1,14 @@
+[
+  {
+    "name": "LifterLMS",
+    "llms_txt": "https://lifterlms.com/llms.txt"
+  },
+  {
+    "name": "WooCommerce",
+    "llms_txt": "https://woocommerce.com/llms.txt"
+  },
+  {
+    "name": "WordPress",
+    "llms_txt": "https://wordpress.org/llms.txt"
+  }
+]

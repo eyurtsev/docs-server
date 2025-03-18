@@ -1,6 +1,7 @@
 """MCP Llms-txt server for docs."""
 
 from typing import TypedDict, List, NotRequired
+from urllib.parse import urlparse
 
 import httpx
 from markdownify import markdownify
@@ -12,6 +13,19 @@ class DocSource(TypedDict):
 
     name: NotRequired[str]
     llms_txt: str
+
+
+def extract_domain(url: str) -> str:
+    """Extract domain from URL.
+
+    Args:
+        url: Full URL
+
+    Returns:
+        Domain with scheme (e.g., https://example.com)
+    """
+    parsed = urlparse(url)
+    return f"{parsed.scheme}://{parsed.netloc}"
 
 
 def create_server(
@@ -29,13 +43,13 @@ def create_server(
         """List all available doc sources. Always start from this tool before fetching any particular content."""
         content = ""
         for entry in doc_source:
-            name = entry.get("name", "")
+            name = entry.get("name", "") or extract_domain(entry["llms_txt"])
             content += f"{name}\n"
             content += "URL: " + entry["llms_txt"] + "\n\n"
         return content
 
     # Parse the domain names in the llms.txt URLs
-    allowed_domains = []
+    allowed_domains = [extract_domain(entry["llms_txt"]) for entry in doc_source]
 
     @server.tool
     async def fetch_docs(url: str) -> str:
@@ -51,22 +65,8 @@ def create_server(
             response.raise_for_status()
             return markdownify(response.text)
         except httpx.HTTPStatusError as e:
-            return "Encountered an HTTP error with code " + str(e.response.status_code)
+            return f"Encountered an HTTP error with code {e.response.status_code}"
+        except httpx.RequestError as e:
+            return f"Encountered a request error: {str(e)}"
 
     return server
-
-
-if __name__ == "__main__":
-    server = create_server(
-        [
-            {
-                "name": "LifterLMS",
-                "llms_txt": "https://lifterlms.com/llms.txt",
-            },
-            {
-                "name": "WooCommerce",
-                "llms_txt": "https://woocommerce.com/llms.txt",
-            },
-        ]
-    )
-    server.run(transport="stdio")
