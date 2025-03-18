@@ -5,19 +5,19 @@ A Model Control Protocol (MCP) server for serving documentation from llms.txt fi
 ## Installation
 
 ```bash
-pip install mcp-llms-txt
+pip install mcp-mcpdoc
 ```
 
 ## Usage
 
 ### Command-line Interface
 
-The `llms-txt` command provides a simple CLI for launching the documentation server. You can specify documentation sources in three ways, and these can be combined:
+The `mcpdoc` command provides a simple CLI for launching the documentation server. You can specify documentation sources in three ways, and these can be combined:
 
 1. Using a YAML config file:
 
 ```bash
-llms-txt --yaml sample_config.yaml
+mcpdoc --yaml sample_config.yaml
 ```
 
 This will load the LangGraph Python documentation from the sample_config.yaml file.
@@ -25,7 +25,7 @@ This will load the LangGraph Python documentation from the sample_config.yaml fi
 2. Using a JSON config file:
 
 ```bash
-llms-txt --json sample_config.json
+mcpdoc --json sample_config.json
 ```
 
 This will load the LangGraph Python documentation from the sample_config.json file.
@@ -33,7 +33,7 @@ This will load the LangGraph Python documentation from the sample_config.json fi
 3. Directly specifying llms.txt URLs with optional names:
 
 ```bash
-llms-txt --urls https://langchain-ai.github.io/langgraph/llms.txt LangGraph:https://langchain-ai.github.io/langgraph/llms.txt
+mcpdoc --urls https://langchain-ai.github.io/langgraph/llms.txt LangGraph:https://langchain-ai.github.io/langgraph/llms.txt
 ```
 
 URLs can be specified either as plain URLs or with optional names using the format `name:url`.
@@ -41,7 +41,7 @@ URLs can be specified either as plain URLs or with optional names using the form
 You can also combine these methods to merge documentation sources:
 
 ```bash
-llms-txt --yaml sample_config.yaml --json sample_config.json --urls https://langchain-ai.github.io/langgraph/llms.txt
+mcpdoc --yaml sample_config.yaml --json sample_config.json --urls https://langchain-ai.github.io/langgraph/llms.txt
 ```
 
 ### Additional Options
@@ -52,7 +52,7 @@ llms-txt --yaml sample_config.yaml --json sample_config.json --urls https://lang
 Example with additional options:
 
 ```bash
-llms-txt --yaml sample_config.yaml --follow-redirects --timeout 15
+mcpdoc --yaml sample_config.yaml --follow-redirects --timeout 15
 ```
 
 This will load the LangGraph Python documentation with a 15-second timeout and follow any HTTP redirects if necessary.
@@ -64,7 +64,7 @@ Both YAML and JSON configuration files should contain a list of documentation so
 #### YAML Configuration Example (sample_config.yaml)
 
 ```yaml
-# Sample configuration for mcp-llms-txt server
+# Sample configuration for mcp-mcpdoc server
 # Each entry must have a llms_txt URL and optionally a name
 - name: LangGraph Python
   llms_txt: https://langchain-ai.github.io/langgraph/llms.txt
@@ -84,7 +84,7 @@ Both YAML and JSON configuration files should contain a list of documentation so
 ### Programmatic Usage
 
 ```python
-from mcp_llms_txt.main import create_server
+from mcpdoc.main import create_server
 
 # Create a server with documentation sources
 server = create_server(

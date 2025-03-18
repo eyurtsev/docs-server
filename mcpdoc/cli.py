@@ -26,8 +26,11 @@ def parse_args() -> argparse.Namespace:
         "--json", "-j", type=str, help="Path to JSON config file with doc sources"
     )
     parser.add_argument(
-        "--urls", "-u", type=str, nargs="+", 
-        help="List of llms.txt URLs with optional names (format: 'url' or 'name:url')"
+        "--urls",
+        "-u",
+        type=str,
+        nargs="+",
+        help="List of llms.txt URLs with optional names (format: 'url' or 'name:url')",
     )
 
     parser.add_argument(
@@ -107,7 +110,10 @@ def main() -> None:
 
     # Check if any source options were provided
     if not (args.yaml or args.json or args.urls):
-        print("Error: At least one source option (--yaml, --json, or --urls) is required", file=sys.stderr)
+        print(
+            "Error: At least one source option (--yaml, --json, or --urls) is required",
+            file=sys.stderr,
+        )
         sys.exit(1)
 
     # Merge doc sources from all provided methods

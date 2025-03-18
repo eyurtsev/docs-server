@@ -1,5 +1,5 @@
 [project]
-name = "mcp-llms-txt"
+name = "mcpdoc"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -12,7 +12,7 @@ dependencies = [
 ]
 
 [project.scripts]
-llms-txt = "mcp_llms_txt.cli:main"
+mcpdoc = "mcpdoc.cli:main"
 
 [dependency-groups]
 test = [
