@@ -1,3 +1,7 @@
+"""A server for just langgraph docs from langchain-ai.github.io.
+
+This is used as a way to test the doc functionality via MCP.
+"""
 # /usr/bin/env python3
 import httpx
 from markdownify import markdownify
