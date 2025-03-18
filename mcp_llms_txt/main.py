@@ -9,10 +9,16 @@ from mcp.server.fastmcp import FastMCP
 
 
 class DocSource(TypedDict):
-    """A source of documentation for a product."""
+    """A source of documentation for a library or a package."""
 
     name: NotRequired[str]
+    """Name of the documentation source (optional)."""
+
     llms_txt: str
+    """URL to the llms.txt file or documentation source."""
+
+    description: NotRequired[str]
+    """Description of the documentation source (optional)."""
 
 
 def extract_domain(url: str) -> str:
@@ -22,10 +28,10 @@ def extract_domain(url: str) -> str:
         url: Full URL
 
     Returns:
-        Domain with scheme (e.g., https://example.com)
+        Domain with scheme and trailing slash (e.g., https://example.com/)
     """
     parsed = urlparse(url)
-    return f"{parsed.scheme}://{parsed.netloc}"
+    return f"{parsed.scheme}://{parsed.netloc}/"
 
 
 def create_server(
@@ -54,6 +60,7 @@ def create_server(
     @server.tool
     async def fetch_docs(url: str) -> str:
         """Use this to fetch documentation from a given URL."""
+        nonlocal allowed_domains
         if not any(url.startswith(domain) for domain in allowed_domains):
             return (
                 "Error: URL not allowed. Must start with one of the following domains: "
@@ -64,9 +71,7 @@ def create_server(
             response = await httpx_client.get(url, timeout=timeout)
             response.raise_for_status()
             return markdownify(response.text)
-        except httpx.HTTPStatusError as e:
+        except (httpx.HTTPStatusError, httpx.RequestError) as e:
             return f"Encountered an HTTP error with code {e.response.status_code}"
-        except httpx.RequestError as e:
-            return f"Encountered a request error: {str(e)}"
 
     return server
